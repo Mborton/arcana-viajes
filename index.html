@@ -439,8 +439,9 @@
       display:flex; flex-direction:column; align-items:center; justify-content:center;
       padding:2rem; text-align:center;
       opacity:0; transition:opacity .35s var(--expo);
+      pointer-events:none;
     }
-    .dest-card:hover .dest-hover { opacity:1; }
+    .dest-card:hover .dest-hover { opacity:1; pointer-events:auto; }
     .dest-hover p { color:rgba(255,255,255,.88); font-size:.875rem; margin-bottom:1.25rem; line-height:1.5; }
     .dest-hover a {
       display:inline-flex; align-items:center; gap:.4rem;
@@ -1112,6 +1113,10 @@
         <div class="dest-info">
           <h3>Japón</h3>
           <span>Asia Oriental</span>
+          <a href="itinerario.html" style="display:inline-flex;align-items:center;gap:.35rem;margin-top:.6rem;font-size:.72rem;font-weight:600;color:var(--teal);letter-spacing:.04em;">
+            Ver itinerario
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:11px;height:11px" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
+          </a>
         </div>
       </div>
 
