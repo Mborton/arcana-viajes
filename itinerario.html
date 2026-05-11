@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Itinerario Japón 10 días — Arcana Viajes</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ─── BASE ──────────────────────────────────────────────────────── */
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    :root {
+      --purple:      #6B4FA0;
+      --purple-dark: #56408A;
+      --purple-muted:rgba(107,79,160,.08);
+      --teal:        #4ECDC4;
+      --teal-dark:   #3ABDB4;
+      --bg:          #FAFAFA;
+      --bg-warm:     #F5F3F0;
+      --text:        #1A1A1A;
+      --text-muted:  #6B6B6B;
+      --neutral:     #E8E8E8;
+      --dark:        #141414;
+      --dark-mid:    #1B1826;
+      --serif:       'Playfair Display', Georgia, serif;
+      --sans:        'Poppins', system-ui, sans-serif;
+      --max-w:       1360px;
+      --expo:        cubic-bezier(.16,1,.3,1);
+      --smooth:      cubic-bezier(.4,0,.2,1);
+    }
+    html { scroll-behavior:smooth; font-size:16px; }
+    body { font-family:var(--sans); background:var(--bg); color:var(--text); line-height:1.7; overflow-x:hidden; }
+    img  { max-width:100%; display:block; }
+    a    { text-decoration:none; color:inherit; }
+    button { border:none; cursor:pointer; font-family:var(--sans); }
+
+    .container { max-width:var(--max-w); margin:0 auto; padding:0 2rem; }
+    .tag {
+      display:inline-block; font-size:.7rem; font-weight:600;
+      letter-spacing:.18em; text-transform:uppercase;
+      color:var(--purple); background:var(--purple-muted);
+      padding:.38rem .9rem; border-radius:100px; margin-bottom:1.2rem;
+    }
+
+    /* ─── REVEAL ─────────────────────────────────────────────────────── */
+    .reveal   { opacity:0; transform:translateY(28px); transition:opacity .8s var(--expo), transform .8s var(--expo); }
+    .reveal-l { opacity:0; transform:translateX(-32px); transition:opacity .9s var(--expo), transform .9s var(--expo); }
+    .reveal-r { opacity:0; transform:translateX(32px);  transition:opacity .9s var(--expo), transform .9s var(--expo); }
+    .reveal.on,.reveal-l.on,.reveal-r.on { opacity:1; transform:none; }
+    [data-d="1"]{transition-delay:.1s}[data-d="2"]{transition-delay:.2s}
+    [data-d="3"]{transition-delay:.3s}[data-d="4"]{transition-delay:.4s}
+
+    /* ─── NAVBAR ────────────────────────────────────────────────────── */
+    .nav {
+      position:fixed; top:0; left:0; right:0; z-index:100;
+      padding:1.2rem 0;
+      transition:background .4s var(--smooth), padding .4s var(--smooth), box-shadow .4s;
+    }
+    .nav.scrolled {
+      background:rgba(250,250,250,.96); backdrop-filter:blur(20px);
+      -webkit-backdrop-filter:blur(20px); padding:.85rem 0;
+      box-shadow:0 1px 0 rgba(0,0,0,.06);
+    }
+    .nav-inner { display:flex; align-items:center; justify-content:space-between; gap:2rem; }
+    .nav-logo  { display:flex; align-items:center; transition:opacity .3s; }
+    .nav-logo img { height:44px; width:auto; border-radius:6px; display:block; }
+    .nav-links { display:flex; align-items:center; gap:1.75rem; list-style:none; }
+    .nav-links a {
+      font-size:.78rem; font-weight:500; letter-spacing:.05em; text-transform:uppercase;
+      color:rgba(255,255,255,.8); position:relative; transition:color .3s;
+    }
+    .nav-links a::after {
+      content:''; position:absolute; bottom:-3px; left:0; width:0; height:1px;
+      background:var(--teal); transition:width .3s var(--expo);
+    }
+    .nav-links a:hover { color:var(--teal); }
+    .nav-links a:hover::after { width:100%; }
+    .nav.scrolled .nav-links a { color:var(--text-muted); }
+    .nav.scrolled .nav-links a:hover { color:var(--purple); }
+    .btn-wa-nav {
+      display:flex; align-items:center; gap:.45rem;
+      background:var(--teal); color:var(--dark);
+      font-size:.78rem; font-weight:600;
+      padding:.55rem 1.15rem; border-radius:6px;
+      transition:background .3s, transform .2s; white-space:nowrap;
+    }
+    .btn-wa-nav:hover { background:var(--teal-dark); transform:translateY(-1px); }
+    .btn-wa-nav:active { transform:scale(.98); }
+    .btn-wa-nav svg { width:14px; height:14px; flex-shrink:0; }
+    .hamburger { display:none; flex-direction:column; gap:5px; background:none; padding:4px; }
+    .hamburger span { display:block; width:22px; height:2px; background:#fff; border-radius:2px; transition:transform .3s, opacity .3s, background .4s; }
+    .nav.scrolled .hamburger span { background:var(--text); }
+    .hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+    .hamburger.open span:nth-child(2){opacity:0}
+    .hamburger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+    .nav-mobile {
+      display:none; flex-direction:column;
+      background:#fff; position:absolute; top:100%; left:0; right:0;
+      padding:1rem 0; box-shadow:0 8px 24px rgba(0,0,0,.08);
+    }
+    .nav-mobile.open { display:flex; }
+    .nav-mobile a { padding:.85rem 1.5rem; font-size:.9rem; font-weight:500; color:var(--text); border-bottom:1px solid var(--neutral); transition:background .2s, color .2s; }
+    .nav-mobile a:hover { background:var(--bg); color:var(--purple); }
+    .nav-mobile .btn-wa-nav { margin:.875rem 1.5rem .5rem; justify-content:center; padding:.875rem; }
+    @media(max-width:1024px){ .nav-links,.btn-wa-nav.desk{display:none} .hamburger{display:flex} }
+
+    /* ─── HERO ──────────────────────────────────────────────────────── */
+    .hero {
+      position:relative; min-height:72dvh;
+      display:flex; align-items:flex-end; overflow:hidden;
+    }
+    .hero-bg { position:absolute; inset:0; z-index:0; }
+    .hero-bg img { width:100%; height:100%; object-fit:cover; object-position:center 35%; }
+    .hero-overlay {
+      position:absolute; inset:0;
+      background:linear-gradient(108deg, rgba(14,10,26,.9) 0%, rgba(14,10,26,.65) 55%, rgba(14,10,26,.25) 100%);
+    }
+    .hero-content { position:relative; z-index:1; padding-bottom:4.5rem; padding-top:5rem; max-width:640px; }
+    .breadcrumb {
+      display:flex; align-items:center; gap:.5rem;
+      font-size:.7rem; font-weight:500; letter-spacing:.08em; text-transform:uppercase;
+      color:rgba(255,255,255,.5); margin-bottom:1.5rem;
+      opacity:0; animation:aUp .8s var(--expo) .2s forwards;
+    }
+    .breadcrumb a { color:rgba(255,255,255,.5); transition:color .25s; }
+    .breadcrumb a:hover { color:var(--teal); }
+    .breadcrumb svg { width:12px; height:12px; }
+    .hero-tag { opacity:0; animation:aUp .8s var(--expo) .3s forwards; }
+    .hero-tag .tag { color:var(--teal); background:rgba(78,205,196,.15); }
+    .hero-h1 {
+      font-family:var(--serif);
+      font-size:clamp(2.4rem,5vw,4rem);
+      font-weight:700; line-height:1.1; letter-spacing:-.025em; color:#fff;
+      margin-bottom:1rem;
+      opacity:0; animation:aUp .9s var(--expo) .45s forwards;
+    }
+    .hero-h1 em { font-style:italic; color:var(--teal); }
+    .hero-stats-row {
+      display:flex; flex-wrap:wrap; gap:1.5rem; margin-top:2rem;
+      opacity:0; animation:aUp .9s var(--expo) .65s forwards;
+    }
+    .hero-stat { display:flex; flex-direction:column; gap:.2rem; }
+    .hero-stat strong {
+      font-family:var(--serif); font-size:1.75rem; font-weight:700;
+      color:#fff; line-height:1;
+    }
+    .hero-stat span { font-size:.7rem; font-weight:500; letter-spacing:.1em; text-transform:uppercase; color:rgba(255,255,255,.52); }
+    .hero-divider { width:1px; background:rgba(255,255,255,.15); align-self:stretch; }
+
+    @keyframes aUp   { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:none} }
+    @keyframes aFade { from{opacity:0} to{opacity:1} }
+
+    /* ─── INTRO ─────────────────────────────────────────────────────── */
+    .itin-intro { padding:5rem 0 3rem; background:#fff; }
+    .itin-intro-grid {
+      display:grid; grid-template-columns:1.1fr 1fr; gap:5rem; align-items:center;
+    }
+    .itin-intro-text h2 {
+      font-family:var(--serif); font-size:clamp(1.75rem,3vw,2.5rem);
+      font-weight:700; line-height:1.15; letter-spacing:-.02em; margin-bottom:1.25rem;
+    }
+    .itin-intro-text p { color:var(--text-muted); font-size:.975rem; margin-bottom:1rem; max-width:52ch; }
+    .itin-chips { display:flex; flex-wrap:wrap; gap:.75rem; margin-top:1.75rem; }
+    .itin-chip {
+      display:flex; align-items:center; gap:.45rem;
+      padding:.5rem 1rem; border-radius:100px;
+      border:1px solid var(--neutral);
+      font-size:.78rem; font-weight:500; color:var(--text-muted);
+      transition:border-color .3s, color .3s;
+    }
+    .itin-chip svg { width:13px; height:13px; color:var(--purple); flex-shrink:0; }
+    .itin-chip:hover { border-color:var(--purple); color:var(--purple); }
+    .itin-map-img {
+      width:100%; aspect-ratio:4/3; object-fit:cover; border-radius:8px;
+    }
+    @media(max-width:900px){ .itin-intro-grid{grid-template-columns:1fr;gap:2.5rem} }
+
+    /* ─── CITY BADGES ────────────────────────────────────────────────── */
+    .cities-strip { background:var(--bg-warm); padding:2.5rem 0; border-top:1px solid var(--neutral); border-bottom:1px solid var(--neutral); }
+    .cities-strip .container { display:flex; align-items:center; gap:0; overflow-x:auto; scrollbar-width:none; }
+    .cities-strip .container::-webkit-scrollbar { display:none; }
+    .city-step {
+      display:flex; align-items:center; gap:0; flex-shrink:0;
+    }
+    .city-step-content {
+      display:flex; flex-direction:column; align-items:center; gap:.4rem;
+      padding:.5rem 1.5rem; text-align:center; cursor:default;
+    }
+    .city-step-days { font-size:.65rem; font-weight:700; letter-spacing:.14em; text-transform:uppercase; color:var(--teal-dark); }
+    .city-step-name { font-family:var(--serif); font-size:1rem; font-weight:600; color:var(--text); }
+    .city-step-arrow { color:var(--neutral); padding:0 .25rem; font-size:.875rem; flex-shrink:0; }
+
+    /* ─── DAY CARDS ──────────────────────────────────────────────────── */
+    .itin-days { padding:5rem 0; background:var(--bg); }
+    .itin-days-inner { display:flex; flex-direction:column; gap:0; }
+
+    .day-card {
+      display:grid; grid-template-columns:1fr 1fr;
+      border-bottom:1px solid var(--neutral);
+      transition:background .3s;
+    }
+    .day-card:hover { background:rgba(107,79,160,.02); }
+    /* alternate image side */
+    .day-card.flip { direction:rtl; }
+    .day-card.flip > * { direction:ltr; }
+
+    .day-img-col { position:relative; overflow:hidden; aspect-ratio:4/3; }
+    .day-img-col img { width:100%; height:100%; object-fit:cover; transition:transform .7s var(--expo); }
+    .day-card:hover .day-img-col img { transform:scale(1.04); }
+    .day-city-badge {
+      position:absolute; top:1.25rem; left:1.25rem;
+      background:var(--purple); color:#fff;
+      font-size:.65rem; font-weight:700; letter-spacing:.12em; text-transform:uppercase;
+      padding:.3rem .8rem; border-radius:100px;
+    }
+    .day-card.flip .day-city-badge { left:auto; right:1.25rem; }
+
+    .day-content-col {
+      padding:3rem;
+      display:flex; flex-direction:column; justify-content:center; gap:1.5rem;
+    }
+    .day-header { display:flex; align-items:baseline; gap:1rem; }
+    .day-num {
+      font-family:var(--serif); font-size:4rem; font-weight:700;
+      color:var(--text); opacity:.08; line-height:1; flex-shrink:0; letter-spacing:-.04em;
+    }
+    .day-header-text h3 {
+      font-family:var(--serif); font-size:1.6rem; font-weight:700;
+      line-height:1.15; letter-spacing:-.02em;
+    }
+    .day-header-text p { font-size:.8rem; color:var(--text-muted); margin-top:.25rem; }
+
+    .day-activities h4, .day-food h4, .day-sleep h4 {
+      font-size:.65rem; font-weight:700; letter-spacing:.16em; text-transform:uppercase;
+      color:var(--text-muted); margin-bottom:.75rem; display:flex; align-items:center; gap:.45rem;
+    }
+    .day-activities h4 svg, .day-food h4 svg, .day-sleep h4 svg { width:13px; height:13px; color:var(--purple); }
+
+    .day-activities ul { list-style:none; display:flex; flex-direction:column; gap:.5rem; }
+    .day-activities li {
+      display:flex; align-items:flex-start; gap:.625rem;
+      font-size:.875rem; color:var(--text-muted); line-height:1.5;
+    }
+    .day-activities li::before {
+      content:''; display:block; width:5px; height:5px; border-radius:50%;
+      background:var(--teal); flex-shrink:0; margin-top:.55rem;
+    }
+
+    .day-foot {
+      display:grid; grid-template-columns:1fr 1fr; gap:1rem;
+      padding-top:1.25rem; border-top:1px solid var(--neutral);
+    }
+    .day-food-block, .day-sleep-block { display:flex; flex-direction:column; gap:.375rem; }
+    .day-food-block h4, .day-sleep-block h4 {
+      font-size:.63rem; font-weight:700; letter-spacing:.14em; text-transform:uppercase;
+      color:var(--text-muted); display:flex; align-items:center; gap:.375rem; margin-bottom:0;
+    }
+    .day-food-block h4 svg, .day-sleep-block h4 svg { width:12px; height:12px; color:var(--teal); }
+    .day-food-name, .day-sleep-name { font-size:.875rem; font-weight:600; color:var(--text); }
+    .day-food-desc, .day-sleep-desc { font-size:.78rem; color:var(--text-muted); line-height:1.4; }
+
+    @media(max-width:900px){
+      .day-card, .day-card.flip { grid-template-columns:1fr; direction:ltr; }
+      .day-card.flip > * { direction:ltr; }
+      .day-img-col { aspect-ratio:16/9; }
+      .day-content-col { padding:2rem; }
+      .day-num { font-size:2.75rem; }
+    }
+    @media(max-width:640px){ .day-content-col{padding:1.5rem} .day-foot{grid-template-columns:1fr} }
+
+    /* ─── CTA FINAL ─────────────────────────────────────────────────── */
+    .cta-section { padding:7rem 0; background:var(--dark); position:relative; overflow:hidden; }
+    .cta-bg { position:absolute; inset:0; background-image:url('https://picsum.photos/seed/japon-final/1400/700'); background-size:cover; background-position:center; opacity:.12; }
+    .cta-inner { position:relative; z-index:1; display:grid; grid-template-columns:1fr 1fr; gap:4rem; align-items:center; }
+    .cta-text h2 { font-family:var(--serif); font-size:clamp(2rem,3.5vw,3.25rem); font-weight:700; color:#fff; line-height:1.1; letter-spacing:-.025em; margin-bottom:1.25rem; }
+    .cta-text h2 em { color:var(--teal); font-style:italic; }
+    .cta-text p { color:rgba(255,255,255,.56); font-size:1rem; max-width:42ch; }
+    .cta-actions { display:flex; flex-direction:column; gap:1.5rem; }
+    .btn-wa-large {
+      display:inline-flex; align-items:center; justify-content:center; gap:.75rem;
+      background:#25D366; color:#fff; font-size:1rem; font-weight:700;
+      padding:1.1rem 2.5rem; border-radius:6px; letter-spacing:.01em;
+      transition:background .3s, transform .2s, box-shadow .3s;
+    }
+    .btn-wa-large:hover { background:#1ebe5a; transform:translateY(-2px); box-shadow:0 8px 28px rgba(37,211,102,.28); }
+    .btn-wa-large:active { transform:scale(.98); }
+    .btn-wa-large svg { width:22px; height:22px; }
+    .cta-note { color:rgba(255,255,255,.38); font-size:.8rem; }
+    @media(max-width:768px){ .cta-inner{grid-template-columns:1fr;gap:2.5rem} }
+
+    /* ─── FOOTER ─────────────────────────────────────────────────────── */
+    .footer { padding:3.5rem 0 2rem; background:var(--dark-mid); border-top:1px solid rgba(255,255,255,.06); }
+    .footer-grid { display:grid; grid-template-columns:1.4fr 1fr 1fr 1fr; gap:3rem; margin-bottom:3rem; }
+    .footer-brand p { font-size:.875rem; color:rgba(255,255,255,.42); line-height:1.7; max-width:30ch; margin-top:.875rem; }
+    .footer-social { display:flex; gap:.625rem; margin-top:1.25rem; }
+    .soc { width:34px; height:34px; border-radius:6px; border:1px solid rgba(255,255,255,.1); display:flex; align-items:center; justify-content:center; color:rgba(255,255,255,.46); transition:border-color .3s, color .3s, background .3s; }
+    .soc:hover { border-color:var(--teal); color:var(--teal); background:rgba(78,205,196,.06); }
+    .soc svg { width:15px; height:15px; }
+    .footer-col h4 { font-size:.68rem; font-weight:700; letter-spacing:.16em; text-transform:uppercase; color:rgba(255,255,255,.3); margin-bottom:1.125rem; }
+    .footer-col ul { list-style:none; display:flex; flex-direction:column; gap:.6rem; }
+    .footer-col ul li a { font-size:.875rem; color:rgba(255,255,255,.5); transition:color .25s; }
+    .footer-col ul li a:hover { color:var(--teal); }
+    .footer-bottom { border-top:1px solid rgba(255,255,255,.06); padding-top:1.75rem; display:flex; justify-content:space-between; align-items:center; gap:1rem; }
+    .footer-bottom p, .footer-bottom a { font-size:.78rem; color:rgba(255,255,255,.28); }
+    .footer-bottom a { transition:color .25s; }
+    .footer-bottom a:hover { color:var(--teal); }
+    @media(max-width:900px){ .footer-grid{grid-template-columns:1fr 1fr;gap:2rem} }
+    @media(max-width:560px){ .footer-grid{grid-template-columns:1fr} .footer-bottom{flex-direction:column;text-align:center} }
+
+    /* ─── WA FLOAT ───────────────────────────────────────────────────── */
+    .wa-float { position:fixed; bottom:2rem; right:2rem; z-index:90; display:flex; align-items:center; gap:.6rem; background:#25D366; color:#fff; font-size:.78rem; font-weight:600; padding:.875rem 1.25rem; border-radius:100px; box-shadow:0 4px 20px rgba(37,211,102,.32); transition:transform .3s var(--expo), box-shadow .3s; cursor:pointer; }
+    .wa-float:hover { transform:translateY(-3px) scale(1.02); box-shadow:0 8px 32px rgba(37,211,102,.42); }
+    .wa-float:active { transform:scale(.97); }
+    .wa-float svg { width:20px; height:20px; flex-shrink:0; }
+    .wa-float-txt { white-space:nowrap; }
+    @media(max-width:540px){ .wa-float-txt{display:none} .wa-float{padding:.875rem;border-radius:50%} }
+
+    @media(max-width:768px){ :root{--sec-py:4rem} .container{padding:0 1.25rem} }
+  </style>
+</head>
+<body>
+
+<!-- ══ NAVBAR ═══════════════════════════════════════════════════════ -->
+<nav class="nav" id="nav">
+  <div class="container">
+    <div class="nav-inner">
+      <a href="arcana-viajes.html" class="nav-logo">
+        <img src="logo-arcana.jpg" alt="Arcana Viajes" />
+      </a>
+      <ul class="nav-links">
+        <li><a href="arcana-viajes.html">Inicio</a></li>
+        <li><a href="arcana-viajes.html#nosotros">Nosotros</a></li>
+        <li><a href="arcana-viajes.html#servicios">Servicios</a></li>
+        <li><a href="arcana-viajes.html#destinos">Destinos</a></li>
+        <li><a href="arcana-viajes.html#testimonios">Testimonios</a></li>
+        <li><a href="arcana-viajes.html#blog">Blog</a></li>
+        <li><a href="arcana-viajes.html#contacto">Contacto</a></li>
+      </ul>
+      <a href="https://wa.me/5491100000000?text=Hola%2C%20quiero%20consultar%20sobre%20el%20itinerario%20a%20Jap%C3%B3n" class="btn-wa-nav desk" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        Consultar itinerario
+      </a>
+      <button class="hamburger" id="ham" aria-label="Menú"><span></span><span></span><span></span></button>
+    </div>
+    <div class="nav-mobile" id="mob">
+      <a href="arcana-viajes.html">Inicio</a>
+      <a href="arcana-viajes.html#nosotros">Nosotros</a>
+      <a href="arcana-viajes.html#servicios">Servicios</a>
+      <a href="arcana-viajes.html#destinos">Destinos</a>
+      <a href="arcana-viajes.html#blog">Blog</a>
+      <a href="arcana-viajes.html#contacto">Contacto</a>
+      <a href="https://wa.me/5491100000000" class="btn-wa-nav" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="currentColor" style="width:15px;height:15px" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        Consultar itinerario
+      </a>
+    </div>
+  </div>
+</nav>
+
+<!-- ══ HERO ══════════════════════════════════════════════════════════ -->
+<section class="hero">
+  <div class="hero-bg">
+    <img src="https://picsum.photos/seed/japon-fuji-hero/1600/900" alt="Japón" loading="eager" />
+  </div>
+  <div class="hero-overlay"></div>
+  <div class="container">
+    <div class="hero-content">
+      <div class="breadcrumb">
+        <a href="arcana-viajes.html">Inicio</a>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
+        <a href="arcana-viajes.html#destinos">Destinos</a>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
+        <span style="color:#fff">Japón</span>
+      </div>
+      <div class="hero-tag"><span class="tag">Itinerario a medida</span></div>
+      <h1 class="hero-h1">Japón<br><em>10 días</em></h1>
+      <div class="hero-stats-row">
+        <div class="hero-stat"><strong>10</strong><span>días</span></div>
+        <div class="hero-divider"></div>
+        <div class="hero-stat"><strong>4</strong><span>ciudades</span></div>
+        <div class="hero-divider"></div>
+        <div class="hero-stat"><strong>Mar–Nov</strong><span>temporada ideal</span></div>
+        <div class="hero-divider"></div>
+        <div class="hero-stat"><strong>Premium</strong><span>nivel de viaje</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ CITIES STRIP ═══════════════════════════════════════════════════ -->
+<div class="cities-strip">
+  <div class="container">
+    <div class="city-step">
+      <div class="city-step-content"><span class="city-step-days">Días 1–3</span><span class="city-step-name">Tokio</span></div>
+    </div>
+    <span class="city-step-arrow">›</span>
+    <div class="city-step">
+      <div class="city-step-content"><span class="city-step-days">Día 4</span><span class="city-step-name">Kamakura</span></div>
+    </div>
+    <span class="city-step-arrow">›</span>
+    <div class="city-step">
+      <div class="city-step-content"><span class="city-step-days">Día 5</span><span class="city-step-name">Hakone</span></div>
+    </div>
+    <span class="city-step-arrow">›</span>
+    <div class="city-step">
+      <div class="city-step-content"><span class="city-step-days">Días 6–8</span><span class="city-step-name">Kioto</span></div>
+    </div>
+    <span class="city-step-arrow">›</span>
+    <div class="city-step">
+      <div class="city-step-content"><span class="city-step-days">Día 8</span><span class="city-step-name">Nara</span></div>
+    </div>
+    <span class="city-step-arrow">›</span>
+    <div class="city-step">
+      <div class="city-step-content"><span class="city-step-days">Días 9–10</span><span class="city-step-name">Osaka</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ INTRO ═════════════════════════════════════════════════════════ -->
+<section class="itin-intro">
+  <div class="container">
+    <div class="itin-intro-grid">
+      <div class="itin-intro-text reveal-l">
+        <span class="tag">Sobre este itinerario</span>
+        <h2>Un viaje que combina<br>historia, naturaleza<br>y gastronomía</h2>
+        <p>
+          Japón no se visita, se vive. Este itinerario de 10 días fue diseñado para viajeras que quieren
+          ir más allá de las fotos de Instagram: templos sin multitudes, onsen privado, restaurantes
+          sin carta en inglés donde la comida es revelación.
+        </p>
+        <p>
+          Arcana coordina todos los traslados, reservas y detalles. Vos llegás y disfrutás.
+        </p>
+        <div class="itin-chips">
+          <div class="itin-chip">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+            Viajera sola o en pareja
+          </div>
+          <div class="itin-chip">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            10 noches incluidas
+          </div>
+          <div class="itin-chip">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            Soporte 24 hs
+          </div>
+          <div class="itin-chip">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            JR Pass incluido
+          </div>
+        </div>
+      </div>
+      <div class="reveal-r">
+        <img class="itin-map-img" src="https://picsum.photos/seed/japon-map-overview/800/600" alt="Ruta por Japón" loading="lazy" />
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ DAY BY DAY ════════════════════════════════════════════════════ -->
+<section class="itin-days">
+  <div class="container">
+    <div style="text-align:center;margin-bottom:3.5rem" class="reveal">
+      <span class="tag">El viaje día a día</span>
+      <h2 style="font-family:var(--serif);font-size:clamp(1.75rem,3vw,2.5rem);font-weight:700;letter-spacing:-.02em;line-height:1.15">Cada día, una experiencia distinta</h2>
+    </div>
+
+    <div class="itin-days-inner">
+
+      <!-- DÍA 1 -->
+      <div class="day-card reveal">
+        <div class="day-img-col">
+          <img src="https://picsum.photos/seed/tokyo-shinjuku-night/800/600" alt="Tokio Shinjuku" loading="lazy" />
+          <span class="day-city-badge">Tokio</span>
+        </div>
+        <div class="day-content-col">
+          <div class="day-header">
+            <span class="day-num">01</span>
+            <div class="day-header-text">
+              <h3>Shinjuku y el primer impacto</h3>
+              <p>Llegada a Narita o Haneda — Shinjuku</p>
+            </div>
+          </div>
+          <div class="day-activities">
+            <h4><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>Actividades</h4>
+            <ul>
+              <li>Traslado aeropuerto → hotel en Shinjuku (Arcana coordina)</li>
+              <li>Primer paseo por Shinjuku Gyoen, el gran parque imperial</li>
+              <li>Omoide Yokocho — el callejón de los recuerdos, humo y yakitori</li>
+              <li>Mirador del Tokyo Metropolitan Government Building (gratis, 202 m)</li>
+            </ul>
+          </div>
+          <div class="day-foot">
+            <div class="day-food-block">
+              <h4><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 002-2V2"/><path d="M7 2v20"/><path d="M21 15V2"/><path d="M18.5 2C17.1 2 16 3.1 16 4.5s1.1 2.5 2.5 2.5c1.4 0 2.5-1.1 2.5-2.5V2"/><path d="M21 22H3"/></svg>Dónde comer</h4>
+              <span class="day-food-name">Ichiran Ramen Shinjuku</span>
+              <span class="day-food-desc">Ramen en cabinas individuales, la experiencia icónica de Japón</span>
+            </div>
+            <div class="day-sleep-block">
+              <h4><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 18v-6a9 9 0 0118 0v6"/><path d="M21 19a2 2 0 01-2 2h-1a2 2 0 01-2-2v-3a2 2 0 012-2h3z"/><path d="M3 19a2 2 0 002 2h1a2 2 0 002-2v-3a2 2 0 00-2-2H3z"/></svg>Dónde dormir</h4>
+              <span class="day-sleep-name">Shinjuku Granbell Hotel</span>
+              <span class="day-sleep-desc">Diseño moderno, ubicación central, vistas nocturnas a Kabukicho</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DÍA 2 -->
+      <div class="day-card flip reveal">
+        <div class="day-img-col">
+          <img src="https://picsum.photos/seed/tokyo-sensoji-temple/800/600" alt="Templo Senso-ji" loading="lazy" />
+          <span class="day-city-badge">Tokio</span>
+        </div>
+        <div class="day-content-col">
+          <div class="day-header">
+            <span class="day-num">02</span>
+            <div class="day-header-text">
+              <h3>Templos, tecnología y manga</h3>
+              <p>Asakusa · Akihabara · Odaiba</p>
+            </div>
+          </div>
+          <div class="day-activities">
+            <h4><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>Actividades</h4>
+            <ul>
+              <li>Senso-ji temple — templo budista más visitado de Japón, ideal temprano</li>
+              <li>Nakamise Dori — calle de tiendas tradicionales con snacks y recuerdos</li>
+              <li>Akihabara — distrito de tecnología, anime y videojuegos</li>
+              <li>teamLab Planets — arte digital inmersivo, reservar con anticipo</li>
+            </ul>
+          </div>
+          <div class="day-foot">
+            <div class="day-food-block">
+              <h4><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 002-2V2"/><path d="M7 2v20"/><path d="M21 15V2"/><path d="M18.5 2C17.1 2 16 3.1 16 4.5s1.1 2.5 2.5 2.5c1.4 0 2.5-1.1 2.5-2.5V2"/><path d="M21 22H3"/></svg>Dónde comer</h4>
+              <span class="day-food-name">Sometaro Okonomiyaki</span>
+              <span class="day-food-desc">Tortillas japonesas que cocinás vos misma en la mesa, Asakusa</span>
+            </div>
+            <div class="day-sleep-block">
+              <h4><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 18v-6a9 9 0 0118 0v6"/><path d="M21 19a2 2 0 01-2 2h-1a2 2 0 01-2-2v-3a2 2 0 012-2h3z"/><path d="M3 19a2 2 0 002 2h1a2 2 0 002-2v-3a2 2 0 00-2-2H3z"/></svg>Dónde dormir</h4>
+              <span class="day-sleep-name">Shinjuku Granbell Hotel</span>
+              <span class="day-sleep-desc">Segunda noche en Tokio</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DÍA 3 -->
+      <div class="day-card reveal">
+        <div class="day-img-col">
+          <img src="https://picsum.photos/seed/tokyo-shibuya-crossing/800/600" alt="Shibuya Crossing" loading="lazy" />
+          <span class="day-city-badge">Tokio</span>
+        </div>
+        <div class="day-content-col">
+          <div class="day-header">
+            <span class="day-num">03</span>
+            <div class="day-header-text">
+              <h3>Harajuku y el cruce de Shibuya</h3>
+              <p>Harajuku · Meiji Jingu · Shibuya</p>
+            </div>
+          </div>
+          <div class="day-activities">
+            <h4><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>Actividades</h4>
+            <ul>
+              <li>Meiji Jingu — santuario shinto en pleno bosque urbano, silencio total</li>
+              <li>Harajuku Takeshita-dori — calle de moda alternativa y cultura pop</li>
+              <li>Omotesando — el boulevard de lujo, arquitectura de firma</li>
+              <li>Shibuya Crossing al atardecer — el cruce peatonal más fotografiado del mundo</li>
+            </ul>
+          </div>
+          <div class="day-foot">
+            <div class="day-food-block">
+              <h4><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 002-2V2"/><path d="M7 2v20"/><path d="M21 15V2"/><path d="M18.5 2C17.1 2 16 3.1 16 4.5s1.1 2.5 2.5 2.5c1.4 0 2.5-1.1 2.5-2.5V2"/><path d="M21 22H3"/></svg>Dónde comer</h4>
+              <span class="day-food-name">Genki Sushi Shibuya</span>
+              <span class="day-food-desc">Sushi en cinta transportadora de alta velocidad, experiencia única</span>
+            </div>
+            <div class="day-sleep-block">
+              <h4><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 18v-6a9 9 0 0118 0v6"/><path d="M21 19a2 2 0 01-2 2h-1a2 2 0 01-2-2v-3a2 2 0 012-2h3z"/><path d="M3 19a2 2 0 002 2h1a2 2 0 002-2v-3a2 2 0 00-2-2H3z"/></svg>Dónde dormir</h4>
+              <span class="day-sleep-name">Shinjuku Granbell Hotel</span>
+              <span class="day-sleep-desc">Última noche en Tokio antes de partir al sur</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DÍA 4 -->
+      <div class="day-card flip reveal">
+        <div class="day-img-col">
+          <img src="https://picsum.photos/seed/kamakura-great-buddha/800/600" alt="Gran Buda de Kamakura" loading="lazy" />
+          <span class="day-city-badge">Kamakura</span>
+        </div>
+        <div class="day-content-col">
+          <div class="day-header">
+            <span class="day-num">04</span>
+            <div class="day-header-text">
+              <h3>El Gran Buda y el mar</h3>
+              <p>Excursión de día completo desde Tokio</p>
+            </div>
+          </div>
+          <div class="day-activities">
+            <h4><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>Actividades</h4>
+            <ul>
+              <li>Tren desde Tokio (1 hora) — incluido en el JR Pass</li>
+              <li>Kotoku-in — el Gran Buda de bronce, 13 metros de altura</li>
+              <li>Templo Hasedera — jardín de flores de temporada e imagen de Kannon</li>
+              <li>Playa de Kamakura — opcional, relajación al atardecer</li>
+            </ul>
+          </div>
+          <div class="day-foot">
+            <div class="day-food-block">
+              <h4><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 002-2V2"/><path d="M7 2v20"/><path d="M21 15V2"/><path d="M18.5 2C17.1 2 16 3.1 16 4.5s1.1 2.5 2.5 2.5c1.4 0 2.5-1.1 2.5-2.5V2"/><path d="M21 22H3"/></svg>Dónde comer</h4>
+              <span class="day-food-name">Nakamura-an Soba</span>
+              <span class="day-food-desc">Soba artesanal frente al mar, restaurante familiar desde 1956</span>
+            </div>
+            <div class="day-sleep-block">
+              <h4><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 18v-6a9 9 0 0118 0v6"/><path d="M21 19a2 2 0 01-2 2h-1a2 2 0 01-2-2v-3a2 2 0 012-2h3z"/><path d="M3 19a2 2 0 002 2h1a2 2 0 002-2v-3a2 2 0 00-2-2H3z"/></svg>Dónde dormir</h4>
+              <span class="day-sleep-name">Regreso a Tokio → traslado a Hakone</span>
+              <span class="day-sleep-desc">Primera noche en ryokan tradicional con onsen privado</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DÍA 5 -->
+      <div class="day-card reveal">
+        <div class="day-img-col">
+          <img src="https://picsum.photos/seed/hakone-fuji-onsen/800/600" alt="Hakone y Monte Fuji" loading="lazy" />
+          <span class="day-city-badge">Hakone</span>
+        </div>
+        <div class="day-content-col">
+          <div class="day-header">
+            <span class="day-num">05</span>
+            <div class="day-header-text">
+              <h3>El Fuji y el primer onsen</h3>
+              <p>Hakone — Lago Ashi — Ryokan</p>
+            </div>
+          </div>
+          <div class="day-activities">
+            <h4><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>Actividades</h4>
+            <ul>
+              <li>Hakone Open-Air Museum — esculturas modernas en paisaje montañoso</li>
+              <li>Crucero por el Lago Ashi con vistas al Monte Fuji (clima despejado)</li>
+              <li>Teleférico Owakudani — valle volcánico activo, huevos cocidos en azufre</li>
+              <li>Onsen en el ryokan — baño termal privado o comunitario</li>
+            </ul>
+          </div>
+          <div class="day-foot">
+            <div class="day-food-block">
+              <h4><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 002-2V2"/><path d="M7 2v20"/><path d="M21 15V2"/><path d="M18.5 2C17.1 2 16 3.1 16 4.5s1.1 2.5 2.5 2.5c1.4 0 2.5-1.1 2.5-2.5V2"/><path d="M21 22H3"/></svg>Dónde comer</h4>
+              <span class="day-food-name">Cena kaiseki en el ryokan</span>
+              <span class="day-food-desc">Menú de degustación de cocina japonesa tradicional, incluido en la estadía</span>
+            </div>
+            <div class="day-sleep-block">
+              <h4><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 18v-6a9 9 0 0118 0v6"/><path d="M21 19a2 2 0 01-2 2h-1a2 2 0 01-2-2v-3a2 2 0 012-2h3z"/><path d="M3 19a2 2 0 002 2h1a2 2 0 002-2v-3a2 2 0 00-2-2H3z"/></svg>Dónde dormir</h4>
+              <span class="day-sleep-name">Hakone Yuryo Ryokan</span>
+              <span class="day-sleep-desc">Ryokan tradicional, futon en habitación con tatami, vistas al bosque</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DÍA 6 -->
+      <div class="day-card flip reveal">
+        <div class="day-img-col">
+          <img src="https://picsum.photos/seed/kyoto-gion-night/800/600" alt="Kioto Gion" loading="lazy" />
+          <span class="day-city-badge">Kioto</span>
+        </div>
+        <div class="day-content-col">
+          <div class="day-header">
+            <span class="day-num">06</span>
+            <div class="day-header-text">
+              <h3>Shinkansen a Kioto y noche en Gion</h3>
+              <p>Hakone → Kioto vía Shinkansen</p>
+            </div>
+          </div>
+          <div class="day-activities">
+            <h4><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>Actividades</h4>
+            <ul>
+              <li>Shinkansen Hakone–Kyoto vía Odawara (aprox. 2h 30min)</li>
+              <li>Check-in en machiya — casa de madera tradicional en el corazón de Kioto</li>
+              <li>Barrio de Gion al anochecer — la posibilidad de cruzar una geisha es real</li>
+              <li>Cena en Pontocho — callejón gastronómico sobre el río Kamogawa</li>
+            </ul>
+          </div>
+          <div class="day-foot">
+            <div class="day-food-block">
+              <h4><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 002-2V2"/><path d="M7 2v20"/><path d="M21 15V2"/><path d="M18.5 2C17.1 2 16 3.1 16 4.5s1.1 2.5 2.5 2.5c1.4 0 2.5-1.1 2.5-2.5V2"/><path d="M21 22H3"/></svg>Dónde comer</h4>
+              <span class="day-food-name">Pontocho Alley</span>
+              <span class="day-food-desc">Restaurante a elección en el callejón gastronómico más emblemático de Kioto</span>
+            </div>
+            <div class="day-sleep-block">
+              <h4><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 18v-6a9 9 0 0118 0v6"/><path d="M21 19a2 2 0 01-2 2h-1a2 2 0 01-2-2v-3a2 2 0 012-2h3z"/><path d="M3 19a2 2 0 002 2h1a2 2 0 002-2v-3a2 2 0 00-2-2H3z"/></svg>Dónde dormir</h4>
+              <span class="day-sleep-name">Machiya Guesthouse Gion</span>
+              <span class="day-sleep-desc">Casa de madera de 100 años restaurada, minimalismo japonés auténtico</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DÍA 7 -->
+      <div class="day-card reveal">
+        <div class="day-img-col">
+          <img src="https://picsum.photos/seed/kyoto-fushimi-inari/800/600" alt="Fushimi Inari Kioto" loading="lazy" />
+          <span class="day-city-badge">Kioto</span>
+        </div>
+        <div class="day-content-col">
+          <div class="day-header">
+            <span class="day-num">07</span>
+            <div class="day-header-text">
+              <h3>Fushimi Inari, Kinkaku-ji y bambú</h3>
+              <p>Los tres grandes de Kioto</p>
+            </div>
+          </div>
+          <div class="day-activities">
+            <h4><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>Actividades</h4>
+            <ul>
+              <li>Fushimi Inari — 10.000 torii anaranjados al amanecer, sin multitudes</li>
+              <li>Mercado Nishiki — el estómago de Kioto, degustación de pickles y snacks</li>
+              <li>Kinkaku-ji — el pabellón dorado reflejado en el estanque</li>
+              <li>Arashiyama — bosque de bambú, monos y el jardín Tenryu-ji</li>
+            </ul>
+          </div>
+          <div class="day-foot">
+            <div class="day-food-block">
+              <h4><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 002-2V2"/><path d="M7 2v20"/><path d="M21 15V2"/><path d="M18.5 2C17.1 2 16 3.1 16 4.5s1.1 2.5 2.5 2.5c1.4 0 2.5-1.1 2.5-2.5V2"/><path d="M21 22H3"/></svg>Dónde comer</h4>
+              <span class="day-food-name">Shoraian Arashiyama</span>
+              <span class="day-food-desc">Tofu kaiseki sobre el río Oi, vista al bosque de bambú</span>
+            </div>
+            <div class="day-sleep-block">
+              <h4><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 18v-6a9 9 0 0118 0v6"/><path d="M21 19a2 2 0 01-2 2h-1a2 2 0 01-2-2v-3a2 2 0 012-2h3z"/><path d="M3 19a2 2 0 002 2h1a2 2 0 002-2v-3a2 2 0 00-2-2H3z"/></svg>Dónde dormir</h4>
+              <span class="day-sleep-name">Machiya Guesthouse Gion</span>
+              <span class="day-sleep-desc">Segunda noche en la machiya, ciudad de noche a pie</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DÍA 8 -->
+      <div class="day-card flip reveal">
+        <div class="day-img-col">
+          <img src="https://picsum.photos/seed/nara-deer-park/800/600" alt="Ciervos en Nara" loading="lazy" />
+          <span class="day-city-badge">Nara</span>
+        </div>
+        <div class="day-content-col">
+          <div class="day-header">
+            <span class="day-num">08</span>
+            <div class="day-header-text">
+              <h3>Los ciervos sagrados de Nara</h3>
+              <p>Excursión a Nara — Regreso a Kioto</p>
+            </div>
+          </div>
+          <div class="day-activities">
+            <h4><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>Actividades</h4>
+            <ul>
+              <li>Tren Kintetsu desde Kioto (45 min) — incluido en pase</li>
+              <li>Parque de Nara — más de 1.200 ciervos sueltos entre turistas</li>
+              <li>Todai-ji — el templo budista de madera más grande del mundo</li>
+              <li>Kasuga Taisha — santuario Shinto con cientos de linternas de piedra</li>
+            </ul>
+          </div>
+          <div class="day-foot">
+            <div class="day-food-block">
+              <h4><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 002-2V2"/><path d="M7 2v20"/><path d="M21 15V2"/><path d="M18.5 2C17.1 2 16 3.1 16 4.5s1.1 2.5 2.5 2.5c1.4 0 2.5-1.1 2.5-2.5V2"/><path d="M21 22H3"/></svg>Dónde comer</h4>
+              <span class="day-food-name">Mizuya Chaya, Nara Park</span>
+              <span class="day-food-desc">Bento japonés en el propio parque, rodeada de ciervos</span>
+            </div>
+            <div class="day-sleep-block">
+              <h4><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 18v-6a9 9 0 0118 0v6"/><path d="M21 19a2 2 0 01-2 2h-1a2 2 0 01-2-2v-3a2 2 0 012-2h3z"/><path d="M3 19a2 2 0 002 2h1a2 2 0 002-2v-3a2 2 0 00-2-2H3z"/></svg>Dónde dormir</h4>
+              <span class="day-sleep-name">Hotel The Celestine Kyoto</span>
+              <span class="day-sleep-desc">Última noche en Kioto, upgrade de alojamiento previo a Osaka</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DÍA 9 -->
+      <div class="day-card reveal">
+        <div class="day-img-col">
+          <img src="https://picsum.photos/seed/osaka-dotonbori/800/600" alt="Dotonbori Osaka" loading="lazy" />
+          <span class="day-city-badge">Osaka</span>
+        </div>
+        <div class="day-content-col">
+          <div class="day-header">
+            <span class="day-num">09</span>
+            <div class="day-header-text">
+              <h3>Osaka: caos, comida y castillo</h3>
+              <p>La capital gastronómica de Japón</p>
+            </div>
+          </div>
+          <div class="day-activities">
+            <h4><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>Actividades</h4>
+            <ul>
+              <li>Shinkansen Kioto–Osaka (15 minutos, sorprendentemente corto)</li>
+              <li>Castillo de Osaka — la fortaleza del siglo XVI con jardines espectaculares</li>
+              <li>Kuromon Ichiba Market — el mercado más vibrante de la ciudad</li>
+              <li>Dotonbori de noche — luces de neón, takoyaki y la fiebre de Osaka</li>
+            </ul>
+          </div>
+          <div class="day-foot">
+            <div class="day-food-block">
+              <h4><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 002-2V2"/><path d="M7 2v20"/><path d="M21 15V2"/><path d="M18.5 2C17.1 2 16 3.1 16 4.5s1.1 2.5 2.5 2.5c1.4 0 2.5-1.1 2.5-2.5V2"/><path d="M21 22H3"/></svg>Dónde comer</h4>
+              <span class="day-food-name">Dotonbori Street Food</span>
+              <span class="day-food-desc">Okonomiyaki + takoyaki + kushi-katsu, la santísima trinidad de Osaka</span>
+            </div>
+            <div class="day-sleep-block">
+              <h4><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 18v-6a9 9 0 0118 0v6"/><path d="M21 19a2 2 0 01-2 2h-1a2 2 0 01-2-2v-3a2 2 0 012-2h3z"/><path d="M3 19a2 2 0 002 2h1a2 2 0 002-2v-3a2 2 0 00-2-2H3z"/></svg>Dónde dormir</h4>
+              <span class="day-sleep-name">Cross Hotel Osaka</span>
+              <span class="day-sleep-desc">Diseño contemporáneo, a pasos del Dotonbori y el metro</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DÍA 10 -->
+      <div class="day-card flip reveal">
+        <div class="day-img-col">
+          <img src="https://picsum.photos/seed/osaka-shinsaibashi/800/600" alt="Osaka despedida" loading="lazy" />
+          <span class="day-city-badge">Osaka</span>
+        </div>
+        <div class="day-content-col">
+          <div class="day-header">
+            <span class="day-num">10</span>
+            <div class="day-header-text">
+              <h3>Último día, último ramen</h3>
+              <p>Compras · Despedida · Vuelo de regreso</p>
+            </div>
+          </div>
+          <div class="day-activities">
+            <h4><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>Actividades</h4>
+            <ul>
+              <li>Shinsaibashi — zona de compras de lujo y tiendas locales</li>
+              <li>Den Den Town — electrónica y cultura otaku, último tour</li>
+              <li>Ramen Kinryu — el último bowl antes de volver</li>
+              <li>Traslado al Aeropuerto Internacional de Kansai (KIX)</li>
+            </ul>
+          </div>
+          <div class="day-foot">
+            <div class="day-food-block">
+              <h4><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 002-2V2"/><path d="M7 2v20"/><path d="M21 15V2"/><path d="M18.5 2C17.1 2 16 3.1 16 4.5s1.1 2.5 2.5 2.5c1.4 0 2.5-1.1 2.5-2.5V2"/><path d="M21 22H3"/></svg>Última comida</h4>
+              <span class="day-food-name">Ramen Kinryu Dotonbori</span>
+              <span class="day-food-desc">El ramen de medianoche de Osaka, abierto las 24 horas, sin turistas</span>
+            </div>
+            <div class="day-sleep-block">
+              <h4><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 18v-6a9 9 0 0118 0v6"/><path d="M21 19a2 2 0 01-2 2h-1a2 2 0 01-2-2v-3a2 2 0 012-2h3z"/><path d="M3 19a2 2 0 002 2h1a2 2 0 002-2v-3a2 2 0 00-2-2H3z"/></svg>Vuelo</h4>
+              <span class="day-sleep-name">Aeropuerto Kansai (KIX)</span>
+              <span class="day-sleep-desc">Arcana coordina el traslado y el check-in con tiempo de sobra</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ══ CTA FINAL ══════════════════════════════════════════════════════ -->
+<section class="cta-section">
+  <div class="cta-bg" aria-hidden="true"></div>
+  <div class="container">
+    <div class="cta-inner">
+      <div class="cta-text reveal-l">
+        <span class="tag" style="color:var(--teal);background:rgba(78,205,196,.12)">Tu turno</span>
+        <h2>¿Querés un<br>itinerario <em>así</em>?</h2>
+        <p>
+          Este es un ejemplo de lo que diseñamos para nuestras viajeras. Tu itinerario
+          sería completamente personalizado según tus fechas, presupuesto y estilo de viaje.
+        </p>
+      </div>
+      <div class="cta-actions reveal-r">
+        <a href="https://wa.me/5491100000000?text=Hola%2C%20vi%20el%20itinerario%20de%20Jap%C3%B3n%20y%20quiero%20planear%20el%20m%C3%ADo"
+           class="btn-wa-large" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          Quiero un itinerario así
+        </a>
+        <p class="cta-note">Respondemos en menos de 24 horas. Sin compromiso.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ FOOTER ══════════════════════════════════════════════════════════ -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <img src="logo-arcana.jpg" alt="Arcana Viajes" style="height:36px;width:auto;border-radius:5px;" />
+        <p>Consultora boutique de viajes para mujeres que eligen viajar bien. Buenos Aires, Argentina.</p>
+        <div class="footer-social">
+          <a href="#" class="soc" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg></a>
+          <a href="#" class="soc" aria-label="Facebook"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/></svg></a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>Navegación</h4>
+        <ul>
+          <li><a href="arcana-viajes.html">Inicio</a></li>
+          <li><a href="arcana-viajes.html#nosotros">Nosotros</a></li>
+          <li><a href="arcana-viajes.html#servicios">Servicios</a></li>
+          <li><a href="arcana-viajes.html#destinos">Destinos</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Destinos</h4>
+        <ul>
+          <li><a href="#">Japón</a></li>
+          <li><a href="#">Kioto</a></li>
+          <li><a href="#">Patagonia</a></li>
+          <li><a href="#">Marruecos</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Contacto</h4>
+        <ul>
+          <li><a href="https://wa.me/5491100000000" target="_blank" rel="noopener">WhatsApp Business</a></li>
+          <li><a href="mailto:hola@arcanaviajes.com">hola@arcanaviajes.com</a></li>
+          <li><a href="#">Buenos Aires, Argentina</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>Arcana Viajes &copy; 2025 &mdash; Buenos Aires, Argentina</p>
+      <p><a href="arcana-viajes.html">Volver al inicio</a></p>
+    </div>
+  </div>
+</footer>
+
+<a class="wa-float" href="https://wa.me/5491100000000?text=Hola%2C%20quiero%20consultar%20sobre%20el%20itinerario%20a%20Jap%C3%B3n" target="_blank" rel="noopener" aria-label="WhatsApp">
+  <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+  <span class="wa-float-txt">Consultar ahora</span>
+</a>
+
+<script>
+  const nav = document.getElementById('nav');
+  const onS = () => nav.classList.toggle('scrolled', window.scrollY > 40);
+  window.addEventListener('scroll', onS, { passive:true }); onS();
+
+  const ham = document.getElementById('ham');
+  const mob = document.getElementById('mob');
+  ham.addEventListener('click', () => {
+    const o = mob.classList.toggle('open');
+    ham.classList.toggle('open', o);
+  });
+  mob.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+    mob.classList.remove('open'); ham.classList.remove('open');
+  }));
+
+  const ro = new IntersectionObserver(entries => {
+    entries.forEach(e => { if(e.isIntersecting){ e.target.classList.add('on'); ro.unobserve(e.target); } });
+  }, { threshold:.12, rootMargin:'0px 0px -40px 0px' });
+  document.querySelectorAll('.reveal,.reveal-l,.reveal-r').forEach(el => ro.observe(el));
+</script>
+</body>
+</html>
